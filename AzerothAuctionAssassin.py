@@ -44,6 +44,8 @@ from mega_alerts import Alerts
 import pandas as pd
 import ctypes
 import breeze_resources
+from utils.realm_data import EU_CONNECTED_REALMS_IDS, NA_CONNECTED_REALMS_IDS
+import random
 
 if sys.platform == "win32":
     myappid = "mycompany.myproduct.subproduct.version"  # arbitrary string
@@ -259,12 +261,14 @@ class App(QMainWindow):
         pet_page = QMainWindow()
         item_page = QMainWindow()
         ilvl_page = QMainWindow()
+        recommendations_page = QMainWindow()
 
         self.stacked_widget.addWidget(home_page)
         self.stacked_widget.addWidget(pet_page)
         self.stacked_widget.addWidget(item_page)
         self.stacked_widget.addWidget(ilvl_page)
         self.stacked_widget.addWidget(settings_page)
+        self.stacked_widget.addWidget(recommendations_page)
 
         self.make_side_buttons()
 
@@ -277,6 +281,8 @@ class App(QMainWindow):
         self.make_ilvl_page(ilvl_page=ilvl_page)
 
         self.make_settings_page(settings_page=settings_page)
+
+        self.make_recommendations_page(recommendations_page=recommendations_page)
 
         self.check_for_settings()
 
@@ -299,6 +305,13 @@ class App(QMainWindow):
             self, "Application Settings", 25, 325, 200, 50
         )
         self.go_to_settings_button.Button.clicked.connect(self.go_to_settings_page)
+
+        self.go_to_recommendations_button = UIButtons(
+            self, "Item Recommendations", 25, 400, 200, 50
+        )
+        self.go_to_recommendations_button.Button.clicked.connect(
+            self.go_to_recommendations_page
+        )
 
         # add a line to separate the buttons from the rest of the UI
         self.line = QLabel(self)
@@ -644,6 +657,74 @@ class App(QMainWindow):
             "Import your desired_ilvl_list.json config"
         )
 
+    def make_recommendations_page(self, recommendations_page):
+        # desired avg price
+        desired_avg_price = LabelTextbox(
+            recommendations_page, "Minimum Desired average price", 0, 50, 200, 40
+        )
+        desired_avg_price.Text.setText("10000")
+        desired_avg_price.Label.setToolTip(
+            "Find items that sell at or above this price."
+        )
+
+        # desired sales per day
+        desired_sales_per_day = LabelTextbox(
+            recommendations_page, "Minimum Desired Sales per Day", 225, 50, 200, 40
+        )
+        desired_sales_per_day.Text.setText("1")
+        desired_sales_per_day.Label.setToolTip(
+            "Find items that sell at or above this sales per day."
+        )
+
+        # main category
+        main_category_label = LabelText(
+            recommendations_page, "Item Main Category", 0, 125, 200, 40
+        )
+        main_category_label.Label.setToolTip("Pick a main item category to search.")
+        main_category = ComboBoxes(recommendations_page, 0, 125, 200, 40)
+        main_category.Combo.addItems(
+            [
+                "All",
+                "Container",
+                "Weapon",
+                "Armor",
+                "Tradegoods",
+                "Recipe",
+                "Quest Item",
+                "Miscellaneous",
+                "Profession",
+            ]
+        )
+
+        # pick a random realm and region for the recommendations
+        if "EU" in self.wow_region.Combo.currentText():
+            region = "EU"
+            realm_ids = list(EU_CONNECTED_REALMS_IDS.values())
+        else:
+            region = "NA"
+            realm_ids = NA_CONNECTED_REALMS_IDS
+        # pick a random value from the list of realm ids
+        random.shuffle(realm_ids)
+        random_realm_id = realm_ids[0]
+
+        marketshare_recommendations = requests.post(
+            f"http://api.saddlebagexchange.com/api/wow/itemstats",
+            headers={"Accept": "application/json"},
+            json={
+                "homeRealmId": random_realm_id,
+                "region": region,
+                "commodity": False,
+                "desired_avg_price": int(desired_avg_price.Text.text()),
+                "desired_sales_per_day": int(desired_sales_per_day.Text.text()),
+                "itemQuality": 1,
+                "required_level": -1,
+                "item_class": -1,
+                "item_subclass": -1,
+                "ilvl": -1,
+            },
+        ).json()
+        a = 1
+
     def go_to_home_page(self):
         self.stacked_widget.setCurrentIndex(0)
 
@@ -658,6 +739,9 @@ class App(QMainWindow):
 
     def go_to_settings_page(self):
         self.stacked_widget.setCurrentIndex(4)
+
+    def go_to_recommendations_page(self):
+        self.stacked_widget.setCurrentIndex(5)
 
     def api_data_received(self, pet_statistics, item_statistics):
         self.pet_statistics = pet_statistics
