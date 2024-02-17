@@ -658,9 +658,27 @@ class App(QMainWindow):
         )
 
     def make_recommendations_page(self, recommendations_page):
+        # add a guides link
+        self.marketshare_guide = QLabel(recommendations_page)
+        self.marketshare_guide.setText(
+            "<a href='https://github.com/ff14-advanced-market-search/saddlebag-with-pockets/wiki/How-to-trade-using-our-WoW-Market-Overview'>Understanding our Item Recommendations!</a>"
+        )
+        self.marketshare_guide.setGeometry(50, 50, 500, 50)
+        self.marketshare_guide.setFont((QtGui.QFont("Arial", 12, QtGui.QFont.Bold)))
+        self.marketshare_guide.setOpenExternalLinks(True)
+
+        # add a website link
+        self.marketshare_link = QLabel(recommendations_page)
+        self.marketshare_link.setText(
+            "<a href='https://saddlebagexchange.com/wow/marketshare'>View the Marketshare on our website!</a>"
+        )
+        self.marketshare_link.setGeometry(50, 85, 500, 50)
+        self.marketshare_link.setFont((QtGui.QFont("Arial", 12, QtGui.QFont.Bold)))
+        self.marketshare_link.setOpenExternalLinks(True)
+
         # desired avg price
         desired_avg_price = LabelTextbox(
-            recommendations_page, "Minimum Desired average price", 0, 50, 200, 40
+            recommendations_page, "Minimum Desired average price", 0, 150, 200, 40
         )
         desired_avg_price.Text.setText("10000")
         desired_avg_price.Label.setToolTip(
@@ -669,7 +687,7 @@ class App(QMainWindow):
 
         # desired sales per day
         desired_sales_per_day = LabelTextbox(
-            recommendations_page, "Minimum Desired Sales per Day", 225, 50, 200, 40
+            recommendations_page, "Minimum Desired Sales per Day", 225, 150, 200, 40
         )
         desired_sales_per_day.Text.setText("1")
         desired_sales_per_day.Label.setToolTip(
@@ -678,10 +696,10 @@ class App(QMainWindow):
 
         # main category
         main_category_label = LabelText(
-            recommendations_page, "Item Main Category", 0, 125, 200, 40
+            recommendations_page, "Item Main Category", 0, 225, 200, 40
         )
         main_category_label.Label.setToolTip("Pick a main item category to search.")
-        main_category = ComboBoxes(recommendations_page, 0, 125, 200, 40)
+        main_category = ComboBoxes(recommendations_page, 0, 225, 200, 40)
         main_category.Combo.addItems(
             [
                 "All",
