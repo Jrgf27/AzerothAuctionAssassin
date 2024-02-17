@@ -311,12 +311,12 @@ class App(QMainWindow):
         self.line.setGeometry(25, 385, 200, 5)
         self.line.setStyleSheet("background-color: white")
 
-        self.go_to_recommendations_button = UIButtons(
-            self, "Item Recommendations", 25, 400, 200, 50
-        )
-        self.go_to_recommendations_button.Button.clicked.connect(
-            self.go_to_recommendations_page
-        )
+        # self.go_to_recommendations_button = UIButtons(
+        #     self, "Item Recommendations", 25, 400, 200, 50
+        # )
+        # self.go_to_recommendations_button.Button.clicked.connect(
+        #     self.go_to_recommendations_page
+        # )
 
         self.save_data_button = UIButtons(self, "Save Data", 25, 475, 200, 50)
         self.save_data_button.Button.clicked.connect(self.save_data_to_json)
