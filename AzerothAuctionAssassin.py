@@ -306,25 +306,17 @@ class App(QMainWindow):
         )
         self.go_to_settings_button.Button.clicked.connect(self.go_to_settings_page)
 
+        # add a line to separate the buttons from the rest of the UI
+        self.line = QLabel(self)
+        self.line.setGeometry(25, 385, 200, 5)
+        self.line.setStyleSheet("background-color: white")
+
         self.go_to_recommendations_button = UIButtons(
             self, "Item Recommendations", 25, 400, 200, 50
         )
         self.go_to_recommendations_button.Button.clicked.connect(
             self.go_to_recommendations_page
         )
-
-        # add a line to separate the buttons from the rest of the UI
-        self.line = QLabel(self)
-        self.line.setGeometry(25, 385, 200, 5)
-        self.line.setStyleSheet("background-color: white")
-
-        # self.import_pbs_data_button = UIButtons(
-        #     self, "Import PBS Data", 25, 400, 200, 50
-        # )
-        # self.import_pbs_data_button.Button.clicked.connect(self.import_pbs_data)
-        # self.import_pbs_data_button.Button.setToolTip(
-        #     "Import your Point Blank Sniper text files"
-        # )
 
         self.save_data_button = UIButtons(self, "Save Data", 25, 475, 200, 50)
         self.save_data_button.Button.clicked.connect(self.save_data_to_json)
@@ -601,11 +593,18 @@ class App(QMainWindow):
         )
 
         self.import_pbs_data_button = UIButtons(
-            item_page, "Import\nPBS Data", 85, 625, 75, 60
+            item_page, "Import\nPBS Data", 80, 625, 75, 60
         )
         self.import_pbs_data_button.Button.clicked.connect(self.import_pbs_data)
         self.import_pbs_data_button.Button.setToolTip(
             "Import your Point Blank Sniper text files"
+        )
+
+        self.go_to_recommendations_button = UIButtons(
+            item_page, "Suggest\nItems", 160, 625, 75, 60
+        )
+        self.go_to_recommendations_button.Button.clicked.connect(
+            self.go_to_recommendations_page
         )
 
     def make_ilvl_page(self, ilvl_page):
@@ -694,24 +693,45 @@ class App(QMainWindow):
             "Find items that sell at or above this sales per day."
         )
 
-        # main category
+        # main category, disable commodity categories
+        main_category_ints = {
+            "All": -1,
+            # "Consumable": 0,
+            "Container": 1,
+            "Weapon": 2,
+            # "Gem": 3,
+            "Armor": 4,
+            # "Tradegoods": 7,
+            # "Item Enhancement": 8,
+            "Recipe": 9,
+            "Quest Item": 12,
+            "Miscellaneous": 15,
+            # "Glyph": 16,
+            # "Battle Pet": 17,
+            "Profession": 19,
+        }
         main_category_label = LabelText(
             recommendations_page, "Item Main Category", 0, 225, 200, 40
         )
         main_category_label.Label.setToolTip("Pick a main item category to search.")
         main_category = ComboBoxes(recommendations_page, 0, 225, 200, 40)
-        main_category.Combo.addItems(
-            [
-                "All",
-                "Container",
-                "Weapon",
-                "Armor",
-                "Tradegoods",
-                "Recipe",
-                "Quest Item",
-                "Miscellaneous",
-                "Profession",
-            ]
+        main_category.Combo.addItems(list(main_category_ints.keys()))
+
+        # sub category
+        sub_category_label = LabelText(
+            recommendations_page, "Item Sub Category", 225, 225, 200, 40
+        )
+        sub_category_label.Label.setToolTip("Pick a sub item category to search.")
+        sub_category = ComboBoxes(recommendations_page, 225, 225, 200, 40)
+        sub_category.Combo.addItems(["All", "foo", "bar"])
+
+        # set minimum market value
+        min_market_value = LabelTextbox(
+            recommendations_page, "Minimum Market Value", 0, 300, 200, 40
+        )
+        min_market_value.Text.setText("10000")
+        min_market_value.Label.setToolTip(
+            "Find items that earn this much gold or more per day on an average realm."
         )
 
         # pick a random realm and region for the recommendations
@@ -736,11 +756,17 @@ class App(QMainWindow):
                 "desired_sales_per_day": int(desired_sales_per_day.Text.text()),
                 "itemQuality": 1,
                 "required_level": -1,
-                "item_class": -1,
+                "item_class": main_category_ints[main_category.Combo.currentText()],
                 "item_subclass": -1,
                 "ilvl": -1,
             },
         ).json()
+        discount_percent = int(self.discount_percent.Text.text()) / 100
+        recommended_items = {
+            str(item["itemID"]): round(item["historicPrice"] * discount_percent, 4)
+            for item in marketshare_recommendations["data"]
+            if item["historicMarketValue"] >= int(min_market_value.Text.text())
+        }
         a = 1
 
     def go_to_home_page(self):
