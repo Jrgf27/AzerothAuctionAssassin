@@ -740,6 +740,17 @@ class App(QMainWindow):
             "Find items that earn this much gold or more per day on an average realm."
         )
 
+        # set discount_percent, recommendations can be different vs the main settings discount for search by name or PBS
+        local_discount_percent = LabelTextbox(
+            recommendations_page, "Discount vs Average Price", 225, 300, 200, 40
+        )
+        local_discount_percent.Text.setText("10")
+        local_discount_percent.Label.setToolTip(
+            "Set the price recommendation discount\n"
+            + "1 to 100, smaller number means a better price.\n"
+            + "ex: if you set 10 pecent and avg price is 100k, it recommends you snipe for 10k."
+        )
+
         # pick a random realm and region for the recommendations
         if "EU" in self.wow_region.Combo.currentText():
             region = "EU"
@@ -767,9 +778,9 @@ class App(QMainWindow):
                 "ilvl": -1,
             },
         ).json()
-        discount_percent = int(self.discount_percent.Text.text()) / 100
+        l_discount_percent = int(local_discount_percent.Text.text()) / 100
         recommended_items = {
-            str(item["itemID"]): round(item["historicPrice"] * discount_percent, 4)
+            str(item["itemID"]): round(item["historicPrice"] * l_discount_percent, 4)
             for item in marketshare_recommendations["data"]
             if item["historicMarketValue"] >= int(min_market_value.Text.text())
         }
