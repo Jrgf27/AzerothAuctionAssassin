@@ -690,7 +690,7 @@ class App(QMainWindow):
         )
         desired_sales_per_day.Text.setText("0.5")
         desired_sales_per_day.Label.setToolTip(
-            "Find items that sell at or above this sales per day."
+            "Find items that sell at least this many time per day on any one realm."
         )
 
         # main category, disable commodity categories
