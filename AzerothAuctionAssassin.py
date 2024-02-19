@@ -262,6 +262,7 @@ class App(QMainWindow):
         item_page = QMainWindow()
         ilvl_page = QMainWindow()
         recommendations_page = QMainWindow()
+        recommendations_list_page = QMainWindow()
 
         self.stacked_widget.addWidget(home_page)
         self.stacked_widget.addWidget(pet_page)
@@ -269,6 +270,7 @@ class App(QMainWindow):
         self.stacked_widget.addWidget(ilvl_page)
         self.stacked_widget.addWidget(settings_page)
         self.stacked_widget.addWidget(recommendations_page)
+        self.stacked_widget.addWidget(recommendations_list_page)
 
         self.make_side_buttons()
 
@@ -283,6 +285,10 @@ class App(QMainWindow):
         self.make_settings_page(settings_page=settings_page)
 
         self.make_recommendations_page(recommendations_page=recommendations_page)
+
+        self.make_recommendations_list_page(
+            recommendations_list_page=recommendations_list_page
+        )
 
         self.check_for_settings()
 
@@ -311,12 +317,12 @@ class App(QMainWindow):
         self.line.setGeometry(25, 385, 200, 5)
         self.line.setStyleSheet("background-color: white")
 
-        # self.go_to_recommendations_button = UIButtons(
-        #     self, "Item Recommendations", 25, 400, 200, 50
-        # )
-        # self.go_to_recommendations_button.Button.clicked.connect(
-        #     self.go_to_recommendations_page
-        # )
+        self.go_to_recommend_list_button = UIButtons(
+            self, "Recommend Items to Snipe", 25, 400, 200, 50
+        )
+        self.go_to_recommend_list_button.Button.clicked.connect(
+            self.go_to_recommend_list_page
+        )
 
         self.save_data_button = UIButtons(self, "Save Data", 25, 475, 200, 50)
         self.save_data_button.Button.clicked.connect(self.save_data_to_json)
@@ -769,6 +775,23 @@ class App(QMainWindow):
         }
         a = 1
 
+    def make_recommendations_list_page(self, recommendations_list_page):
+        self.default_search = UIButtons(
+            recommendations_list_page, "Default Search", 0, 50, 200, 50
+        )
+
+        self.recipies_search = UIButtons(
+            recommendations_list_page, "Recipies Search", 215, 50, 200, 50
+        )
+
+        self.mount_search = UIButtons(
+            recommendations_list_page, "Mount Search", 0, 125, 200, 50
+        )
+
+        self.high_value_search = UIButtons(
+            recommendations_list_page, "High Value Search", 215, 125, 200, 50
+        )
+
     def go_to_home_page(self):
         self.stacked_widget.setCurrentIndex(0)
 
@@ -786,6 +809,9 @@ class App(QMainWindow):
 
     def go_to_recommendations_page(self):
         self.stacked_widget.setCurrentIndex(5)
+
+    def go_to_recommend_list_page(self):
+        self.stacked_widget.setCurrentIndex(6)
 
     def api_data_received(self, pet_statistics, item_statistics):
         self.pet_statistics = pet_statistics
