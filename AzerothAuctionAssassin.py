@@ -688,7 +688,7 @@ class App(QMainWindow):
         desired_sales_per_day = LabelTextbox(
             recommendations_page, "Minimum Desired Sales per Day", 225, 150, 200, 40
         )
-        desired_sales_per_day.Text.setText("1")
+        desired_sales_per_day.Text.setText("0.5")
         desired_sales_per_day.Label.setToolTip(
             "Find items that sell at or above this sales per day."
         )
@@ -753,7 +753,7 @@ class App(QMainWindow):
                 "region": region,
                 "commodity": False,
                 "desired_avg_price": int(desired_avg_price.Text.text()),
-                "desired_sales_per_day": int(desired_sales_per_day.Text.text()),
+                "desired_sales_per_day": float(desired_sales_per_day.Text.text()),
                 "itemQuality": 1,
                 "required_level": -1,
                 "item_class": main_category_ints[main_category.Combo.currentText()],
