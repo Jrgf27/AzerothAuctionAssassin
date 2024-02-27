@@ -174,7 +174,7 @@ class Item_And_Pet_Statistics(QThread):
 class App(QMainWindow):
     def __init__(self):
         super(App, self).__init__()
-        self.title = "Azeroth Auction Assassin v1.0.10.1"
+        self.title = "Azeroth Auction Assassin v1.0.11"
         self.left = 0
         self.top = 0
         self.width = 750
@@ -591,7 +591,7 @@ class App(QMainWindow):
         self.item_list_display.List.itemClicked.connect(self.item_list_double_clicked)
 
         self.import_item_data_button = UIButtons(
-            item_page, "Import\nItem Data", 0, 625, 75, 60
+            item_page, "Import\nItem Data", 0, 625, 80, 60
         )
         self.import_item_data_button.Button.clicked.connect(self.import_item_data)
         self.import_item_data_button.Button.setToolTip(
@@ -599,7 +599,7 @@ class App(QMainWindow):
         )
 
         self.import_pbs_data_button = UIButtons(
-            item_page, "Import\nPBS Data", 80, 625, 75, 60
+            item_page, "Import\nPBS Data", 85, 625, 80, 60
         )
         self.import_pbs_data_button.Button.clicked.connect(self.import_pbs_data)
         self.import_pbs_data_button.Button.setToolTip(
@@ -607,7 +607,7 @@ class App(QMainWindow):
         )
 
         self.go_to_recommendations_button = UIButtons(
-            item_page, "Suggest\nItems", 160, 625, 75, 60
+            item_page, "Suggest\nItems", 170, 625, 75, 60
         )
         self.go_to_recommendations_button.Button.clicked.connect(
             self.go_to_recommendations_page
