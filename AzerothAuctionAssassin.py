@@ -683,7 +683,7 @@ class App(QMainWindow):
 
         # desired avg price
         desired_avg_price = LabelTextbox(
-            recommendations_page, "Minimum Desired average price", 0, 150, 200, 40
+            recommendations_page, "Minimum Desired Average Price", 0, 150, 200, 40
         )
         desired_avg_price.Text.setText("10000")
         desired_avg_price.Label.setToolTip(
